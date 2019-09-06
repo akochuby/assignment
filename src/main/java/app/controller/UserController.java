@@ -39,14 +39,14 @@ public class UserController {
         return user;
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping(value = "/users/{id}", consumes = "application/json")
     public ResponseEntity<String> put(@PathVariable Integer id, @RequestBody User user) throws UnexpectedException {
         userDao.update(id, user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> put(@PathVariable Integer id) throws UnexpectedException {
+    public ResponseEntity<String> delete(@PathVariable Integer id) throws UnexpectedException {
         userDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -1,6 +1,7 @@
 package app.controller;
 
 import app.dao.UserDao;
+import app.exception.UnexpectedException;
 import app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,18 +32,21 @@ public class UserController {
 
     @GetMapping(value="/users/{id}", produces = "application/json")
     @ResponseBody
-    public User getById(@PathVariable Integer id) {
-        return userDao.getById(id);
+    public User getById(@PathVariable Integer id) throws UnexpectedException {
+        User user = userDao.getById(id);
+        if (user == null)
+            throw new UnexpectedException("Requested user does not exist");
+        return user;
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> put(@PathVariable Integer id, @RequestBody User user) {
+    public ResponseEntity<String> put(@PathVariable Integer id, @RequestBody User user) throws UnexpectedException {
         userDao.update(id, user);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> put(@PathVariable Integer id) {
+    public ResponseEntity<String> put(@PathVariable Integer id) throws UnexpectedException {
         userDao.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

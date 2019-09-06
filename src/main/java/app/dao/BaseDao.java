@@ -1,5 +1,6 @@
 package app.dao;
 
+import app.exception.UnexpectedException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +27,13 @@ abstract class BaseDao<T extends Serializable> {
         getCurrentSession().save(entity);
     }
 
-    abstract void update(Integer id, T newEntity);
+    abstract void update(Integer id, T newEntity) throws UnexpectedException;
 
-    public void deleteById(Integer id) {
-        getCurrentSession().delete(getCurrentSession().get(type, id));
+    public void deleteById(Integer id) throws UnexpectedException {
+        T entity = getCurrentSession().get(type, id);
+        if (entity == null)
+            throw new UnexpectedException("User to delete does not exist");
+        getCurrentSession().delete(entity);
     }
 
     protected Session getCurrentSession() {
